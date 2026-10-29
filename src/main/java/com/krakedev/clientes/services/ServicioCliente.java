@@ -48,6 +48,7 @@ public class ServicioCliente {
 		if(cliente!=null) {
 			cliente.setNombre(clienteActualizado.getNombre());
 			cliente.setApellido(clienteActualizado.getApellido());
+			cliente.setEmail(clienteActualizado.getEmail());
 		}
 		return cliente;
 	}

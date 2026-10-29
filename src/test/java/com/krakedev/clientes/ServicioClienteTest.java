@@ -15,132 +15,120 @@ import com.krakedev.clientes.services.ServicioCliente;
 
 public class ServicioClienteTest {
 
-	
+	// PRUEBA 1: Crear un cliente
+	@Test
+	public void testCrearCliente() {
 
-	 // PRUEBA 1: Crear un cliente
-    @Test
-    public void testCrearCliente() {
+		ServicioCliente servicio = new ServicioCliente();
 
-        ServicioCliente servicio = new ServicioCliente();
+		Cliente cliente = new Cliente("1723456789", "Ana", "Lopez", "ana@gmail.com");
 
-        Cliente cliente = new Cliente(
-                "1723456789", "Ana", "Lopez");
+		Cliente resultado = servicio.crear(cliente);
 
-        Cliente resultado = servicio.crear(cliente);
+		assertNotNull(resultado);
+		assertEquals("1723456789", resultado.getCedula());
+		assertEquals("Ana", resultado.getNombre());
+		assertEquals("Lopez", resultado.getApellido());
+		assertEquals("ana@gmail.com", resultado.getEmail());
+	}
 
-        assertNotNull(resultado);
-        assertEquals("1723456789", resultado.getCedula());
-        assertEquals("Ana", resultado.getNombre());
-        assertEquals("Lopez", resultado.getApellido());
-    }
+	// PRUEBA 2: No permitir clientes con cédula duplicada
+	@Test
+	public void testCrearClienteDuplicado() {
 
-    // PRUEBA 2: No permitir clientes con cédula duplicada
-    @Test
-    public void testCrearClienteDuplicado() {
+		ServicioCliente servicio = new ServicioCliente();
 
-        ServicioCliente servicio = new ServicioCliente();
+		Cliente cliente1 = new Cliente("1723456789", "Ana", "Lopez", "ana@gmail.com");
 
-        Cliente cliente1 = new Cliente(
-                "1723456789", "Ana", "Lopez");
+		Cliente cliente2 = new Cliente("1723456789", "Pedro", "Perez", "pedro@gmail.com");
 
-        Cliente cliente2 = new Cliente(
-                "1723456789", "Pedro", "Perez");
+		servicio.crear(cliente1);
 
-        servicio.crear(cliente1);
+		Cliente resultado = servicio.crear(cliente2);
 
-        Cliente resultado = servicio.crear(cliente2);
+		assertNull(resultado);
+		assertEquals(1, servicio.listar().size());
+	}
 
-        assertNull(resultado);
-        assertEquals(1, servicio.listar().size());
-    }
+	// PRUEBA 3: Listar clientes
+	@Test
+	public void testListarClientes() {
 
-    // PRUEBA 3: Listar clientes
-    @Test
-    public void testListarClientes() {
+		ServicioCliente servicio = new ServicioCliente();
 
-        ServicioCliente servicio = new ServicioCliente();
+		Cliente cliente1 = new Cliente("1723456789", "Ana", "Lopez", "ana@gmail.com");
 
-        Cliente cliente1 = new Cliente(
-                "111", "Ana", "Lopez");
+		Cliente cliente2 = new Cliente("1823456789", "Pedro", "Perez", "pedro@gmail.com");
 
-        Cliente cliente2 = new Cliente(
-                "222", "Pedro", "Perez");
+		servicio.crear(cliente1);
+		servicio.crear(cliente2);
 
-        servicio.crear(cliente1);
-        servicio.crear(cliente2);
+		List<Cliente> resultado = servicio.listar();
 
-        List<Cliente> resultado = servicio.listar();
+		assertEquals(2, resultado.size());
+		assertEquals("Ana", resultado.get(0).getNombre());
+		assertEquals("Pedro", resultado.get(1).getNombre());
+	}
 
-        assertEquals(2, resultado.size());
-        assertEquals("Ana", resultado.get(0).getNombre());
-        assertEquals("Pedro", resultado.get(1).getNombre());
-    }
+	// PRUEBA 4: Actualizar un cliente existente
+	@Test
+	public void testActualizarCliente() {
 
-    // PRUEBA 4: Actualizar un cliente existente
-    @Test
-    public void testActualizarCliente() {
+		ServicioCliente servicio = new ServicioCliente();
 
-        ServicioCliente servicio = new ServicioCliente();
+		Cliente cliente = new Cliente("1723456789", "Ana", "Lopez", "ana@gmail.com");
 
-        Cliente cliente = new Cliente(
-                "1723456789", "Ana", "Lopez");
+		servicio.crear(cliente);
+		
+		Cliente clienteActualizado = new Cliente("1723456789", "Maria", "Gomez","maria@gmail.com");
 
-        servicio.crear(cliente);
+		Cliente resultado = servicio.actualizar("1723456789", clienteActualizado);
 
-        Cliente clienteActualizado = new Cliente(
-                "1723456789", "Maria", "Gomez");
+		assertNotNull(resultado);
+		assertEquals("1723456789", resultado.getCedula());
+		assertEquals("Maria", resultado.getNombre());
+		assertEquals("Gomez", resultado.getApellido());
+	}
 
-        Cliente resultado = servicio.actualizar(
-                "1723456789", clienteActualizado);
+	// PRUEBA 5: Actualizar un cliente inexistente
+	@Test
+	public void testActualizarClienteInexistente() {
 
-        assertNotNull(resultado);
-        assertEquals("1723456789", resultado.getCedula());
-        assertEquals("Maria", resultado.getNombre());
-        assertEquals("Gomez", resultado.getApellido());
-    }
+		ServicioCliente servicio = new ServicioCliente();
 
-    // PRUEBA 5: Actualizar un cliente inexistente
-    @Test
-    public void testActualizarClienteInexistente() {
+		Cliente clienteActualizado = new Cliente("999", "Maria", "Gomez","pedro@gmail.com");
 
-        ServicioCliente servicio = new ServicioCliente();
+		Cliente resultado = servicio.actualizar("999", clienteActualizado);
 
-        Cliente clienteActualizado = new Cliente(
-                "999", "Maria", "Gomez");
+		assertNull(resultado);
+		assertTrue(servicio.listar().isEmpty());
+	}
 
-        Cliente resultado = servicio.actualizar(
-                "999", clienteActualizado);
+	// PRUEBA 6: Eliminar un cliente existente
+	@Test
+	public void testEliminarCliente() {
 
-        assertNull(resultado);
-        assertTrue(servicio.listar().isEmpty());
-    }
+		ServicioCliente servicio = new ServicioCliente();
 
-    // PRUEBA 6: Eliminar un cliente existente
-    @Test
-    public void testEliminarCliente() {
+		Cliente cliente = new Cliente("1723456789", "Ana", "Lopez", "ana@gmail.com");
 
-        ServicioCliente servicio = new ServicioCliente();
+		servicio.crear(cliente);
 
-        Cliente cliente = new Cliente(
-                "1723456789", "Ana", "Lopez");
+		boolean resultado = servicio.eliminar("1723456789");
 
-        servicio.crear(cliente);
+		assertTrue(resultado);
+		assertTrue(servicio.listar().isEmpty());
+	}
 
-        boolean resultado = servicio.eliminar("1723456789");
+	// PRUEBA 7: Eliminar un cliente inexistente
+	@Test
+	public void testEliminarClienteInexistente() {
 
-        assertTrue(resultado);
-        assertTrue(servicio.listar().isEmpty());
-    }
+		ServicioCliente servicio = new ServicioCliente();
 
-    // PRUEBA 7: Eliminar un cliente inexistente
-    @Test
-    public void testEliminarClienteInexistente() {
+		boolean resultado = servicio.eliminar("999");
 
-        ServicioCliente servicio = new ServicioCliente();
-
-        boolean resultado = servicio.eliminar("999");
-
-        assertFalse(resultado);
-        assertTrue(servicio.listar().isEmpty());
-    }
+		assertFalse(resultado);
+		assertTrue(servicio.listar().isEmpty());
+	}
 }
